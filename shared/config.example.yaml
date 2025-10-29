@@ -1,0 +1,63 @@
+# Configuration Template for AI Workflow Demo
+# Copy this to config.yaml and fill in your values
+
+gcp:
+  project_id: "your-project-id"
+  region: "us-central1"
+
+bigquery:
+  dataset: "knowledge_base"
+  location: "us-central1"
+
+vertex_ai:
+  location: "us-central1"
+  embedding_model: "textembedding-gecko@003"
+  llm_model: "gemini-1.5-flash"
+
+slack:
+  # Get webhook URL from: https://api.slack.com/messaging/webhooks
+  webhook_url: "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+  bot_token: "xoxb-your-bot-token"  # Optional, for advanced features
+
+shopify:
+  # Your Shopify store URL
+  store_url: "your-store.myshopify.com"
+  # Webhook secret for verification (optional in demo)
+  webhook_secret: "your-webhook-secret"
+
+google_workspace:
+  # Apps Script Web App URL
+  apps_script_url: "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"
+  # Spreadsheet ID for dashboard
+  spreadsheet_id: "your-spreadsheet-id"
+
+notifications:
+  # Email for alerts
+  admin_email: "admin@example.com"
+  # Send alerts for high-risk orders
+  risk_threshold: 0.7
+  # Send alerts for fraud flags
+  enable_fraud_alerts: true
+
+workflows:
+  # Enable daily analytics workflow
+  daily_analytics_enabled: true
+  # Cron schedule (9am daily)
+  daily_analytics_schedule: "0 9 * * *"
+
+  # Enable order processing workflow
+  order_processing_enabled: true
+  # Auto-trigger for high-risk orders
+  auto_trigger_threshold: 0.7
+
+features:
+  # Enable RAG knowledge base
+  rag_enabled: true
+  # Number of documents to retrieve for context
+  rag_top_k: 3
+
+  # Enable AI order analysis
+  ai_analysis_enabled: true
+
+  # Enable automatic sheet updates
+  sheets_auto_update: true

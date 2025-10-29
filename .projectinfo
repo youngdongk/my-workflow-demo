@@ -1,0 +1,37 @@
+╔══════════════════════════════════════════════════════════════════╗
+║           AI-POWERED WORKFLOW AUTOMATION DEMO                    ║
+║                                                                  ║
+║  A complete working demo of LLM-powered workflow automation      ║
+║  showing modern cloud architecture in action                     ║
+╚══════════════════════════════════════════════════════════════════╝
+
+📦 COMPONENTS
+  • Slack RAG Bot (Python + Vertex AI)
+  • Shopify Order Processor (TypeScript + AI Analysis)
+  • Google Sheets Dashboard (Apps Script)
+  • Cloud Workflows (Orchestration)
+  • BigQuery (Data Warehouse)
+
+🚀 QUICK START
+  1. export GCP_PROJECT="your-project-id"
+  2. cd deploy && ./deploy-all.sh
+  3. cd ../slack-rag-bot && python populate_knowledge_base.py
+  4. cd ../deploy && ./test-system.sh
+
+📚 DOCUMENTATION
+  • README.md          - Overview
+  • QUICKSTART.md      - 15-min setup guide
+  • ARCHITECTURE.md    - System design
+  • EXAMPLES.md        - Usage examples
+  • PROJECT_SUMMARY.md - Complete summary
+
+🎯 TECH STACK
+  Languages: Python, TypeScript, SQL, Apps Script, YAML
+  AI: Vertex AI (Gemini 1.5 Flash, Embeddings)
+  Cloud: Functions, Run, Workflows, BigQuery, Scheduler
+  Integrations: Slack, Shopify, Google Workspace
+
+💰 COST
+  < $5/month for demo/testing
+
+🎉 READY TO DEPLOY!

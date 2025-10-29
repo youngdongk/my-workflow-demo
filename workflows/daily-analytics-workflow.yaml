@@ -1,0 +1,226 @@
+# Cloud Workflow - Daily Analytics Processing
+# Runs daily to aggregate data, generate insights, and update dashboards
+
+main:
+  steps:
+    - init:
+        assign:
+          - projectId: "your-project-id"
+          - region: "us-central1"
+          - today: ${sys.now()}
+
+    - log_start:
+        call: sys.log
+        args:
+          text: "📊 Starting daily analytics workflow"
+          severity: INFO
+
+    # Step 1: Aggregate daily order metrics
+    - aggregate_order_metrics:
+        call: googleapis.bigquery.v2.jobs.query
+        args:
+          projectId: ${projectId}
+          body:
+            query: |
+              SELECT
+                COUNT(*) as total_orders,
+                SUM(total_amount) as total_revenue,
+                AVG(ai_risk_score) as avg_risk_score,
+                SUM(CASE WHEN ai_priority = 'high' THEN 1 ELSE 0 END) as high_priority_count,
+                SUM(CASE WHEN ARRAY_LENGTH(fraud_flags) > 0 THEN 1 ELSE 0 END) as fraud_flag_count
+              FROM `knowledge_base.orders`
+              WHERE DATE(created_at) = CURRENT_DATE()
+            useLegacySql: false
+        result: orderMetrics
+
+    - extract_order_metrics:
+        assign:
+          - totalOrders: ${orderMetrics.rows[0].f[0].v}
+          - totalRevenue: ${orderMetrics.rows[0].f[1].v}
+          - avgRiskScore: ${orderMetrics.rows[0].f[2].v}
+          - highPriorityCount: ${orderMetrics.rows[0].f[3].v}
+          - fraudFlagCount: ${orderMetrics.rows[0].f[4].v}
+
+    # Step 2: Aggregate Q&A interaction metrics
+    - aggregate_qa_metrics:
+        call: googleapis.bigquery.v2.jobs.query
+        args:
+          projectId: ${projectId}
+          body:
+            query: |
+              SELECT
+                COUNT(*) as total_questions,
+                AVG(top_similarity) as avg_similarity,
+                COUNT(DISTINCT user_id) as unique_users
+              FROM `knowledge_base.interactions`
+              WHERE DATE(timestamp) = CURRENT_DATE()
+            useLegacySql: false
+        result: qaMetrics
+
+    - extract_qa_metrics:
+        assign:
+          - totalQuestions: ${qaMetrics.rows[0].f[0].v}
+          - avgSimilarity: ${qaMetrics.rows[0].f[1].v}
+          - uniqueUsers: ${qaMetrics.rows[0].f[2].v}
+
+    # Step 3: Generate AI insights summary
+    - generate_ai_summary:
+        call: http.post
+        args:
+          url: ${"https://" + region + "-aiplatform.googleapis.com/v1/projects/" + projectId + "/locations/" + region + "/publishers/google/models/gemini-1.5-flash:generateContent"}
+          auth:
+            type: OAuth2
+          headers:
+            Content-Type: "application/json"
+          body:
+            contents:
+              - role: "user"
+                parts:
+                  - text: ${
+                      "Generate a brief executive summary of today's metrics: " +
+                      totalOrders + " orders, $" + totalRevenue + " revenue, " +
+                      totalQuestions + " support questions. " +
+                      "Average risk score: " + avgRiskScore + ". " +
+                      highPriorityCount + " high priority orders, " +
+                      fraudFlagCount + " fraud flags. " +
+                      "Provide 3 key insights and 2 recommendations."
+                    }
+        result: aiSummaryResponse
+
+    - extract_ai_summary:
+        assign:
+          - aiSummary: ${aiSummaryResponse.body.candidates[0].content.parts[0].text}
+
+    # Step 4: Check for anomalies
+    - check_anomalies:
+        switch:
+          - condition: ${avgRiskScore > 0.6}
+            next: alert_high_risk_day
+          - condition: ${fraudFlagCount > 5}
+            next: alert_fraud_spike
+          - condition: true
+            next: update_dashboards
+
+    - alert_high_risk_day:
+        call: sys.log
+        args:
+          text: ${"⚠️ ALERT: High average risk score today: " + string(avgRiskScore)}
+          severity: WARNING
+        next: send_anomaly_notification
+
+    - alert_fraud_spike:
+        call: sys.log
+        args:
+          text: ${"🚨 ALERT: Fraud flag spike: " + string(fraudFlagCount) + " orders flagged"}
+          severity: ERROR
+        next: send_anomaly_notification
+
+    - send_anomaly_notification:
+        try:
+          call: http.post
+          args:
+            url: "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+            headers:
+              Content-Type: "application/json"
+            body:
+              text: "⚠️ Daily Analytics Alert"
+              blocks:
+                - type: "section"
+                  text:
+                    type: "mrkdwn"
+                    text: ${
+                      "*Anomaly Detected*\n" +
+                      "Avg Risk Score: " + string(avgRiskScore) + "\n" +
+                      "Fraud Flags: " + string(fraudFlagCount) + "\n" +
+                      "High Priority Orders: " + string(highPriorityCount)
+                    }
+        except:
+          as: e
+          steps:
+            - log_notification_error:
+                call: sys.log
+                args:
+                  text: ${"Failed to send notification: " + e.message}
+                  severity: WARNING
+
+    # Step 5: Update Google Sheets dashboard
+    - update_dashboards:
+        try:
+          call: http.post
+          args:
+            url: "https://script.google.com/macros/s/YOUR_APPS_SCRIPT_ID/exec"
+            headers:
+              Content-Type: "application/json"
+            body:
+              action: "updateDashboard"
+          result: dashboardResult
+        except:
+          as: e
+          steps:
+            - log_dashboard_error:
+                call: sys.log
+                args:
+                  text: ${"Failed to update dashboard: " + e.message}
+                  severity: WARNING
+
+    # Step 6: Identify knowledge gaps (low similarity questions)
+    - identify_knowledge_gaps:
+        call: googleapis.bigquery.v2.jobs.query
+        args:
+          projectId: ${projectId}
+          body:
+            query: |
+              SELECT
+                question,
+                top_similarity
+              FROM `knowledge_base.interactions`
+              WHERE DATE(timestamp) >= DATE_SUB(CURRENT_DATE(), INTERVAL 7 DAY)
+                AND top_similarity < 0.6
+              ORDER BY top_similarity ASC
+              LIMIT 10
+            useLegacySql: false
+        result: knowledgeGaps
+
+    - log_knowledge_gaps:
+        call: sys.log
+        args:
+          text: ${"Found " + string(len(knowledgeGaps.rows)) + " questions with low relevance - consider adding docs"}
+          severity: INFO
+
+    # Step 7: Store daily summary
+    - store_daily_summary:
+        call: googleapis.bigquery.v2.tabledata.insertAll
+        args:
+          projectId: ${projectId}
+          datasetId: "knowledge_base"
+          tableId: "workflow_executions"
+          body:
+            rows:
+              - json:
+                  workflow_name: "daily-analytics"
+                  status: "completed"
+                  output:
+                    date: ${text.split(today, "T")[0]}
+                    totalOrders: ${totalOrders}
+                    totalRevenue: ${totalRevenue}
+                    totalQuestions: ${totalQuestions}
+                    avgRiskScore: ${avgRiskScore}
+                    aiSummary: ${aiSummary}
+                  completed_at: ${sys.now()}
+
+    - log_completion:
+        call: sys.log
+        args:
+          text: "✅ Daily analytics workflow completed"
+          severity: INFO
+
+    - return_summary:
+        return:
+          success: true
+          date: ${text.split(today, "T")[0]}
+          metrics:
+            orders: ${totalOrders}
+            revenue: ${totalRevenue}
+            questions: ${totalQuestions}
+            avgRiskScore: ${avgRiskScore}
+          aiSummary: ${aiSummary}

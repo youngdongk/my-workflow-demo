@@ -1,0 +1,184 @@
+# Cloud Workflow - Order Processing Orchestration
+# Coordinates multi-step order processing with AI analysis and notifications
+
+main:
+  params: [input]
+  steps:
+    - init:
+        assign:
+          - orderId: ${input.orderId}
+          - orderNumber: ${input.orderNumber}
+          - priority: ${input.priority}
+          - riskScore: ${input.riskScore}
+          - projectId: "your-project-id"
+          - region: "us-central1"
+
+    - log_start:
+        call: sys.log
+        args:
+          text: ${"🚀 Starting order processing workflow for order " + orderNumber}
+          severity: INFO
+
+    # Step 1: Fetch full order details from BigQuery
+    - fetch_order_details:
+        call: googleapis.bigquery.v2.jobs.query
+        args:
+          projectId: ${projectId}
+          body:
+            query: ${"SELECT * FROM `" + projectId + ".knowledge_base.orders` WHERE order_id = '" + orderId + "'"}
+            useLegacySql: false
+        result: orderQueryResult
+
+    - extract_order_data:
+        assign:
+          - orderData: ${orderQueryResult.rows[0].f}
+
+    # Step 2: Check if high priority or high risk
+    - check_priority:
+        switch:
+          - condition: ${priority == "high" or riskScore > 0.7}
+            next: send_slack_alert
+          - condition: true
+            next: update_sheets
+
+    # Step 3a: Send Slack notification for high priority
+    - send_slack_alert:
+        call: http.post
+        args:
+          url: "https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
+          headers:
+            Content-Type: "application/json"
+          body:
+            text: ${"🚨 High Priority Order Alert"}
+            blocks:
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: ${"*Order:* " + orderNumber + "\n*Priority:* " + priority + "\n*Risk Score:* " + string(riskScore)}
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "*Action Required:* Manual review needed"
+        result: slackResponse
+
+    - log_slack_sent:
+        call: sys.log
+        args:
+          text: ${"📱 Slack notification sent for order " + orderNumber}
+          severity: INFO
+
+    # Step 3b: Check for fraud flags
+    - check_fraud:
+        switch:
+          - condition: ${riskScore > 0.8}
+            next: create_manual_review_task
+          - condition: true
+            next: update_sheets
+
+    # Step 4: Create manual review task in external system
+    - create_manual_review_task:
+        try:
+          call: http.post
+          args:
+            url: ${"https://" + region + "-" + projectId + ".cloudfunctions.net/create-review-task"}
+            headers:
+              Content-Type: "application/json"
+            body:
+              orderId: ${orderId}
+              orderNumber: ${orderNumber}
+              riskScore: ${riskScore}
+              assignee: "fraud-team"
+          result: taskResult
+        except:
+          as: e
+          steps:
+            - log_error:
+                call: sys.log
+                args:
+                  text: ${"⚠️ Failed to create review task: " + e.message}
+                  severity: WARNING
+
+    # Step 5: Trigger Sheets update
+    - update_sheets:
+        try:
+          call: http.post
+          args:
+            url: "https://script.google.com/macros/s/YOUR_APPS_SCRIPT_ID/exec"
+            headers:
+              Content-Type: "application/json"
+            body:
+              action: "updateOrdersSheet"
+          result: sheetsResult
+        except:
+          as: e
+          steps:
+            - log_sheets_error:
+                call: sys.log
+                args:
+                  text: ${"⚠️ Failed to update sheets: " + e.message}
+                  severity: WARNING
+
+    # Step 6: Run AI-powered follow-up analysis
+    - ai_follow_up:
+        switch:
+          - condition: ${priority == "high"}
+            next: generate_recommendations
+          - condition: true
+            next: log_workflow_execution
+
+    # Step 7: Generate AI recommendations using Vertex AI
+    - generate_recommendations:
+        try:
+          call: http.post
+          args:
+            url: ${"https://" + region + "-aiplatform.googleapis.com/v1/projects/" + projectId + "/locations/" + region + "/publishers/google/models/gemini-1.5-flash:generateContent"}
+            auth:
+              type: OAuth2
+            headers:
+              Content-Type: "application/json"
+            body:
+              contents:
+                - role: "user"
+                  parts:
+                    - text: ${"Analyze this order and provide recommendations: Order #" + orderNumber + ", Risk Score: " + string(riskScore) + ", Priority: " + priority + ". What actions should the team take?"}
+          result: aiResponse
+        except:
+          as: e
+          steps:
+            - log_ai_error:
+                call: sys.log
+                args:
+                  text: ${"⚠️ AI recommendation failed: " + e.message}
+                  severity: WARNING
+
+    # Step 8: Log workflow execution to BigQuery
+    - log_workflow_execution:
+        call: googleapis.bigquery.v2.tabledata.insertAll
+        args:
+          projectId: ${projectId}
+          datasetId: "knowledge_base"
+          tableId: "workflow_executions"
+          body:
+            rows:
+              - json:
+                  workflow_name: "order-processing"
+                  status: "completed"
+                  input:
+                    orderId: ${orderId}
+                    orderNumber: ${orderNumber}
+                    priority: ${priority}
+                    riskScore: ${riskScore}
+                  completed_at: ${sys.now()}
+
+    - log_completion:
+        call: sys.log
+        args:
+          text: ${"✅ Workflow completed for order " + orderNumber}
+          severity: INFO
+
+    - return_result:
+        return:
+          success: true
+          orderId: ${orderId}
+          orderNumber: ${orderNumber}
+          message: "Order processing workflow completed successfully"
