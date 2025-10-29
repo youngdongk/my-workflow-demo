@@ -20,7 +20,7 @@ const DATASET = 'knowledge_base';
 function updateDashboard() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
 
-  Logger.log('🔄 Starting dashboard update...');
+  Logger.log('[INFO] Starting dashboard update...');
 
   // Update each sheet
   updateOrdersSheet(ss);
@@ -33,7 +33,7 @@ function updateDashboard() {
   metaSheet.getRange('A1').setValue('Last Updated:');
   metaSheet.getRange('B1').setValue(new Date());
 
-  Logger.log('✅ Dashboard updated successfully!');
+  Logger.log('[SUCCESS] Dashboard updated successfully!');
 
   // Send notification email
   sendUpdateNotification();
@@ -92,7 +92,7 @@ function updateOrdersSheet(ss) {
   // Auto-resize columns
   sheet.autoResizeColumns(1, headers.length);
 
-  Logger.log(`✓ Updated Orders sheet: ${results.length} rows`);
+  Logger.log(`[OK] Updated Orders sheet: ${results.length} rows`);
 }
 
 /**
@@ -127,7 +127,7 @@ function updateInteractionsSheet(ss) {
 
   sheet.autoResizeColumns(1, headers.length);
 
-  Logger.log(`✓ Updated Interactions sheet: ${results.length} rows`);
+  Logger.log(`[OK] Updated Interactions sheet: ${results.length} rows`);
 }
 
 /**
@@ -189,7 +189,7 @@ function updateAnalyticsSheet(ss) {
 
   sheet.autoResizeColumns(1, 5);
 
-  Logger.log(`✓ Updated Analytics sheet`);
+  Logger.log(`[OK] Updated Analytics sheet`);
 }
 
 /**
@@ -202,7 +202,7 @@ function updateAlertsSheet(ss) {
   // High-risk orders
   const query = `
     SELECT
-      '🚨 High Risk Order' as alert_type,
+      '[ALERT] High Risk Order' as alert_type,
       order_number as reference,
       customer_email as details,
       ai_risk_score as score,
@@ -214,7 +214,7 @@ function updateAlertsSheet(ss) {
     UNION ALL
 
     SELECT
-      '⚠️ Fraud Flag' as alert_type,
+      '[WARNING] Fraud Flag' as alert_type,
       order_number as reference,
       ARRAY_TO_STRING(fraud_flags, ', ') as details,
       ai_risk_score as score,
@@ -238,12 +238,12 @@ function updateAlertsSheet(ss) {
     // Highlight entire rows
     sheet.getRange(2, 1, results.length, headers.length).setBackground('#fce8e6');
   } else {
-    sheet.getRange('A2').setValue('✅ No alerts - all clear!');
+    sheet.getRange('A2').setValue('[OK] No alerts - all clear!');
   }
 
   sheet.autoResizeColumns(1, headers.length);
 
-  Logger.log(`✓ Updated Alerts sheet: ${results.length} alerts`);
+  Logger.log(`[OK] Updated Alerts sheet: ${results.length} alerts`);
 }
 
 /**
@@ -264,7 +264,7 @@ function runBigQueryQuery(query) {
     });
 
   } catch (error) {
-    Logger.log(`❌ BigQuery error: ${error}`);
+    Logger.log(`[ERROR] BigQuery error: ${error}`);
     return [];
   }
 }
@@ -335,7 +335,7 @@ function sendUpdateNotification() {
   const url = ss.getUrl();
   const recipient = Session.getActiveUser().getEmail();
 
-  const subject = '📊 Daily Dashboard Update';
+  const subject = 'Daily Dashboard Update';
   const body = `
 Your AI Workflow Dashboard has been updated!
 
@@ -354,7 +354,7 @@ Last update: ${new Date().toLocaleString()}
   const alertsSheet = ss.getSheetByName('Alerts');
   if (alertsSheet && alertsSheet.getLastRow() > 1) {
     MailApp.sendEmail(recipient, subject, body);
-    Logger.log(`📧 Notification sent to ${recipient}`);
+    Logger.log(`[INFO] Notification sent to ${recipient}`);
   }
 }
 
@@ -363,9 +363,9 @@ Last update: ${new Date().toLocaleString()}
  */
 function onOpen() {
   const ui = SpreadsheetApp.getUi();
-  ui.createMenu('📊 Dashboard')
-    .addItem('🔄 Update Now', 'updateDashboard')
-    .addItem('⚙️ Setup Trigger', 'setupTrigger')
+  ui.createMenu('Dashboard')
+    .addItem('Update Now', 'updateDashboard')
+    .addItem('Setup Trigger', 'setupTrigger')
     .addToUi();
 }
 
@@ -384,5 +384,5 @@ function setupTrigger() {
     .everyDays(1)
     .create();
 
-  SpreadsheetApp.getUi().alert('✅ Daily trigger set for 9:00 AM');
+  SpreadsheetApp.getUi().alert('[SUCCESS] Daily trigger set for 9:00 AM');
 }

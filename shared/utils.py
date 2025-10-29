@@ -258,7 +258,7 @@ class SlackFormatter:
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": f"{icons.get(severity, '•')} {severity.upper()} Alert"
+                        "text": f"{icons.get(severity, '*')} {severity.upper()} Alert"
                     }
                 },
                 {
@@ -296,6 +296,6 @@ def truncate_text(text: str, max_length: int = 100, suffix: str = "...") -> str:
 
 def format_currency(amount: float, currency: str = "USD") -> str:
     """Format currency amount"""
-    symbols = {"USD": "$", "EUR": "€", "GBP": "£"}
+    symbols = {"USD": "$", "EUR": "EUR ", "GBP": "GBP "}
     symbol = symbols.get(currency, currency + " ")
     return f"{symbol}{amount:,.2f}"

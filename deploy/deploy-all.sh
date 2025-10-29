@@ -5,19 +5,19 @@
 
 set -e  # Exit on error
 
-echo "🚀 AI Workflow Demo - Full Deployment"
+echo "AI Workflow Demo - Full Deployment"
 echo "======================================"
 
 # Check if GCP_PROJECT is set
 if [ -z "$GCP_PROJECT" ]; then
-    echo "❌ Error: GCP_PROJECT environment variable not set"
+    echo "[ERROR] GCP_PROJECT environment variable not set"
     echo "   Run: export GCP_PROJECT='your-project-id'"
     exit 1
 fi
 
 if [ -z "$GCP_REGION" ]; then
     export GCP_REGION="us-central1"
-    echo "ℹ️  Using default region: $GCP_REGION"
+    echo "[INFO] Using default region: $GCP_REGION"
 fi
 
 echo ""
@@ -35,7 +35,7 @@ fi
 
 # Enable required APIs
 echo ""
-echo "1️⃣  Enabling GCP APIs..."
+echo "[1/6] Enabling GCP APIs..."
 gcloud services enable \
     cloudfunctions.googleapis.com \
     run.googleapis.com \
@@ -45,19 +45,19 @@ gcloud services enable \
     cloudbuild.googleapis.com \
     --project=$GCP_PROJECT
 
-echo "✅ APIs enabled"
+echo "[OK] APIs enabled"
 
 # Deploy BigQuery
 echo ""
-echo "2️⃣  Setting up BigQuery..."
+echo "[2/6] Setting up BigQuery..."
 cd ../bigquery
 bq mk --dataset --location=$GCP_REGION ${GCP_PROJECT}:knowledge_base || echo "Dataset already exists"
 bq query --use_legacy_sql=false < schema.sql
-echo "✅ BigQuery setup complete"
+echo "[OK] BigQuery setup complete"
 
 # Deploy Slack RAG Bot (Cloud Function)
 echo ""
-echo "3️⃣  Deploying Slack RAG Bot..."
+echo "[3/6] Deploying Slack RAG Bot..."
 cd ../slack-rag-bot
 
 gcloud functions deploy slack-rag-bot \
@@ -72,11 +72,11 @@ gcloud functions deploy slack-rag-bot \
     --timeout=60s
 
 SLACK_BOT_URL=$(gcloud functions describe slack-rag-bot --region=$GCP_REGION --project=$GCP_PROJECT --format='value(httpsTrigger.url)')
-echo "✅ Slack Bot deployed at: $SLACK_BOT_URL"
+echo "[OK] Slack Bot deployed at: $SLACK_BOT_URL"
 
 # Deploy Shopify Order Processor (Cloud Run)
 echo ""
-echo "4️⃣  Deploying Shopify Order Processor..."
+echo "[4/6] Deploying Shopify Order Processor..."
 cd ../shopify-processor
 
 gcloud builds submit --tag gcr.io/$GCP_PROJECT/shopify-processor --project=$GCP_PROJECT
@@ -92,11 +92,11 @@ gcloud run deploy shopify-processor \
     --timeout=60
 
 SHOPIFY_URL=$(gcloud run services describe shopify-processor --region=$GCP_REGION --project=$GCP_PROJECT --format='value(status.url)')
-echo "✅ Shopify Processor deployed at: $SHOPIFY_URL"
+echo "[OK] Shopify Processor deployed at: $SHOPIFY_URL"
 
 # Deploy Workflows
 echo ""
-echo "5️⃣  Deploying Cloud Workflows..."
+echo "[5/6] Deploying Cloud Workflows..."
 cd ../workflows
 
 gcloud workflows deploy order-processing-workflow \
@@ -109,11 +109,11 @@ gcloud workflows deploy daily-analytics-workflow \
     --location=$GCP_REGION \
     --project=$GCP_PROJECT
 
-echo "✅ Workflows deployed"
+echo "[OK] Workflows deployed"
 
 # Setup scheduled workflow execution
 echo ""
-echo "6️⃣  Setting up scheduled workflows..."
+echo "[6/6] Setting up scheduled workflows..."
 
 # Create Cloud Scheduler job for daily analytics
 gcloud scheduler jobs create http daily-analytics-job \
@@ -125,15 +125,15 @@ gcloud scheduler jobs create http daily-analytics-job \
     --project=$GCP_PROJECT \
     || echo "Scheduler job already exists"
 
-echo "✅ Scheduler configured"
+echo "[OK] Scheduler configured"
 
 # Summary
 echo ""
 echo "======================================"
-echo "🎉 Deployment Complete!"
+echo "[SUCCESS] Deployment Complete!"
 echo "======================================"
 echo ""
-echo "📝 Next Steps:"
+echo "Next Steps:"
 echo ""
 echo "1. Populate Knowledge Base:"
 echo "   cd slack-rag-bot"
@@ -151,9 +151,9 @@ echo ""
 echo "5. Test the system:"
 echo "   curl -X POST ${SHOPIFY_URL}/test"
 echo ""
-echo "📊 View data in BigQuery:"
+echo "View data in BigQuery:"
 echo "   https://console.cloud.google.com/bigquery?project=$GCP_PROJECT"
 echo ""
-echo "🔄 View Workflows:"
+echo "View Workflows:"
 echo "   https://console.cloud.google.com/workflows?project=$GCP_PROJECT"
 echo ""

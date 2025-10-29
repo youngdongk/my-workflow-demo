@@ -169,7 +169,7 @@ def slack_bot(request):
 
             # 4. Format response for Slack
             sources_text = "\n".join([
-                f"• {doc['metadata'].get('title', 'Document')} (relevance: {doc['similarity']:.2f})"
+                f"- {doc['metadata'].get('title', 'Document')} (relevance: {doc['similarity']:.2f})"
                 for doc in relevant_docs[:3]
             ])
 
