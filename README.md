@@ -2,14 +2,14 @@
 
 A collection of working demos showing how AI assistants and automation turn team workflows into reliable systems.
 
-## 🎯 What This Demonstrates
+## What This Demonstrates
 
 - **LLM-Powered Support Bot**: Slack integration with RAG (Retrieval Augmented Generation)
 - **Smart Order Processing**: Shopify webhook → AI analysis → BigQuery storage
 - **Sheets Automation**: Google Apps Script for automated reporting
 - **Workflow Orchestration**: Cloud Workflows coordinating multiple services
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 Slack Messages → Cloud Function → Vertex AI (RAG) → BigQuery
@@ -17,7 +17,7 @@ Shopify Orders → Cloud Run → LLM Analysis → BigQuery → Sheets
 Google Sheets ← Apps Script ← BigQuery Analytics
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ├── slack-rag-bot/          # Python Cloud Function - Slack support bot with RAG
@@ -29,7 +29,7 @@ Google Sheets ← Apps Script ← BigQuery Analytics
 └── deploy/                 # Deployment scripts
 ```
 
-## 🚀 Components
+## Components
 
 ### 1. Slack RAG Bot (Python)
 - Receives questions via Slack webhook
@@ -53,7 +53,7 @@ Google Sheets ← Apps Script ← BigQuery Analytics
 - Error handling and retries
 - Integrates all services
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **LLM**: Google Vertex AI (Gemini, text-embeddings)
 - **Compute**: Cloud Functions, Cloud Run
@@ -61,7 +61,7 @@ Google Sheets ← Apps Script ← BigQuery Analytics
 - **Orchestration**: Cloud Workflows
 - **Integrations**: Slack, Shopify, Google Workspace
 
-## 📦 Quick Deploy
+## Quick Deploy
 
 ```bash
 # Set your GCP project
@@ -73,7 +73,7 @@ cd deploy
 ./deploy-all.sh
 ```
 
-## 🎮 Usage Examples
+## Usage Examples
 
 **Slack Bot:**
 ```
@@ -91,7 +91,7 @@ New order arrives → AI analyzes for fraud/priority → Updates BigQuery → No
 Daily at 9am → Query BigQuery → Update dashboard → Email summary
 ```
 
-## 📝 Notes
+## Notes
 
 This is a DEMO for learning and prototyping:
 - No authentication/security implemented
