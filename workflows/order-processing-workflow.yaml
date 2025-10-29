@@ -16,7 +16,7 @@ main:
     - log_start:
         call: sys.log
         args:
-          text: ${"🚀 Starting order processing workflow for order " + orderNumber}
+          text: ${"Starting order processing workflow for order " + orderNumber}
           severity: INFO
 
     # Step 1: Fetch full order details from BigQuery
@@ -49,7 +49,7 @@ main:
           headers:
             Content-Type: "application/json"
           body:
-            text: ${"🚨 High Priority Order Alert"}
+            text: ${"High Priority Order Alert"}
             blocks:
               - type: "section"
                 text:
@@ -64,7 +64,7 @@ main:
     - log_slack_sent:
         call: sys.log
         args:
-          text: ${"📱 Slack notification sent for order " + orderNumber}
+          text: ${"Slack notification sent for order " + orderNumber}
           severity: INFO
 
     # Step 3b: Check for fraud flags
@@ -95,7 +95,7 @@ main:
             - log_error:
                 call: sys.log
                 args:
-                  text: ${"⚠️ Failed to create review task: " + e.message}
+                  text: ${"Failed to create review task: " + e.message}
                   severity: WARNING
 
     # Step 5: Trigger Sheets update
@@ -115,7 +115,7 @@ main:
             - log_sheets_error:
                 call: sys.log
                 args:
-                  text: ${"⚠️ Failed to update sheets: " + e.message}
+                  text: ${"Failed to update sheets: " + e.message}
                   severity: WARNING
 
     # Step 6: Run AI-powered follow-up analysis
@@ -148,7 +148,7 @@ main:
             - log_ai_error:
                 call: sys.log
                 args:
-                  text: ${"⚠️ AI recommendation failed: " + e.message}
+                  text: ${"AI recommendation failed: " + e.message}
                   severity: WARNING
 
     # Step 8: Log workflow execution to BigQuery
@@ -173,7 +173,7 @@ main:
     - log_completion:
         call: sys.log
         args:
-          text: ${"✅ Workflow completed for order " + orderNumber}
+          text: ${"Workflow completed for order " + orderNumber}
           severity: INFO
 
     - return_result:

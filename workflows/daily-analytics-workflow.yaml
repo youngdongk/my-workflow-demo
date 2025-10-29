@@ -12,7 +12,7 @@ main:
     - log_start:
         call: sys.log
         args:
-          text: "📊 Starting daily analytics workflow"
+          text: "Starting daily analytics workflow"
           severity: INFO
 
     # Step 1: Aggregate daily order metrics
@@ -104,14 +104,14 @@ main:
     - alert_high_risk_day:
         call: sys.log
         args:
-          text: ${"⚠️ ALERT: High average risk score today: " + string(avgRiskScore)}
+          text: ${"ALERT: High average risk score today: " + string(avgRiskScore)}
           severity: WARNING
         next: send_anomaly_notification
 
     - alert_fraud_spike:
         call: sys.log
         args:
-          text: ${"🚨 ALERT: Fraud flag spike: " + string(fraudFlagCount) + " orders flagged"}
+          text: ${"ALERT: Fraud flag spike: " + string(fraudFlagCount) + " orders flagged"}
           severity: ERROR
         next: send_anomaly_notification
 
@@ -123,7 +123,7 @@ main:
             headers:
               Content-Type: "application/json"
             body:
-              text: "⚠️ Daily Analytics Alert"
+              text: "Daily Analytics Alert"
               blocks:
                 - type: "section"
                   text:
@@ -211,7 +211,7 @@ main:
     - log_completion:
         call: sys.log
         args:
-          text: "✅ Daily analytics workflow completed"
+          text: "Daily analytics workflow completed"
           severity: INFO
 
     - return_summary:
