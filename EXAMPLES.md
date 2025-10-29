@@ -298,7 +298,7 @@ function sendCustomAlert() {
   if (count > 0) {
     MailApp.sendEmail(
       'admin@example.com',
-      '⚠️ High Risk Orders Alert',
+      'High Risk Orders Alert',
       `${count} high-risk orders detected today. Review immediately.`
     );
   }
@@ -358,7 +358,7 @@ Update workflows with your Slack webhook:
       headers:
         Content-Type: "application/json"
       body:
-        text: "🚨 High priority order detected!"
+        text: "High priority order detected!"
 ```
 
 Get webhook URL:
@@ -401,7 +401,7 @@ gcloud workflows execute order-processing-workflow \
 # 5. Update dashboard
 echo "5. Dashboard will update on next scheduled run or manual trigger"
 
-echo "✅ End-to-end test complete!"
+echo "End-to-end test complete!"
 ```
 
 ## Monitoring Examples
@@ -470,4 +470,4 @@ const prompt = `Analyze this order and focus on:
 ...`;
 ```
 
-These examples should help you get started with the AI Workflow Demo! 🚀
+These examples should help you get started with the AI Workflow Demo! 

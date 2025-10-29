@@ -198,7 +198,7 @@ Apps Script updates Google Sheets
 
 ## Security Considerations (Production)
 
-**⚠️ This is a DEMO - Not production-ready!**
+**This is a DEMO - Not production-ready!**
 
 For production, add:
 

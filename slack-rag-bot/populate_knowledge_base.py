@@ -84,7 +84,7 @@ def populate_knowledge_base():
     if errors:
         print(f"Errors occurred: {errors}")
     else:
-        print(f"✓ Successfully inserted {len(rows)} documents!")
+        print(f"[OK] Successfully inserted {len(rows)} documents!")
 
     # Show sample
     print("\nSample documents:")

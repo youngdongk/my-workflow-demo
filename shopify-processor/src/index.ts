@@ -139,7 +139,7 @@ async function storeOrder(order: ShopifyOrder, analysis: AIAnalysis) {
   };
 
   await table.insert([row]);
-  console.log(`✓ Stored order ${order.order_number} in BigQuery`);
+  console.log(`[OK] Stored order ${order.order_number} in BigQuery`);
 }
 
 /**
@@ -148,7 +148,7 @@ async function storeOrder(order: ShopifyOrder, analysis: AIAnalysis) {
 async function triggerWorkflow(order: ShopifyOrder, analysis: AIAnalysis) {
   // Trigger workflow for high-priority or high-risk orders
   if (analysis.priority === 'high' || analysis.riskScore > 0.7) {
-    console.log(`🔔 High priority/risk order detected: ${order.order_number}`);
+    console.log(`[ALERT] High priority/risk order detected: ${order.order_number}`);
 
     // In a real system, trigger Cloud Workflow here
     // For demo, just log
@@ -182,15 +182,15 @@ app.post('/webhook/order-created', async (req: Request, res: Response) => {
   try {
     const order: ShopifyOrder = req.body;
 
-    console.log(`📦 Received order: ${order.order_number}`);
+    console.log(`[INFO] Received order: ${order.order_number}`);
 
     // 1. Analyze order with AI
-    console.log('🤖 Analyzing with Vertex AI...');
+    console.log('[AI] Analyzing with Vertex AI...');
     const analysis = await analyzeOrder(order);
     console.log('Analysis:', analysis);
 
     // 2. Store enriched data
-    console.log('💾 Storing in BigQuery...');
+    console.log('[DB] Storing in BigQuery...');
     await storeOrder(order, analysis);
 
     // 3. Trigger workflows if needed
@@ -209,7 +209,7 @@ app.post('/webhook/order-created', async (req: Request, res: Response) => {
     });
 
   } catch (error) {
-    console.error('❌ Error processing order:', error);
+    console.error('[ERROR] Error processing order:', error);
     res.status(500).json({
       success: false,
       error: 'Internal server error'
@@ -257,7 +257,7 @@ app.post('/test', async (req: Request, res: Response) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Shopify Order Processor running on port ${PORT}`);
-  console.log(`📍 Webhook: POST /webhook/order-created`);
-  console.log(`🧪 Test: POST /test`);
+  console.log(`[START] Shopify Order Processor running on port ${PORT}`);
+  console.log(`[INFO] Webhook: POST /webhook/order-created`);
+  console.log(`[INFO] Test: POST /test`);
 });

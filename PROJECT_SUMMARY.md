@@ -1,10 +1,10 @@
-# 🎉 Project Summary - AI Workflow Demo
+# Project Summary - AI Workflow Demo
 
 ## What We Built
 
 A **complete, working demonstration** of AI-powered workflow automation showing how modern tools (Python, TypeScript, LLM APIs, cloud functions) can turn team workflows into reliable, intelligent systems.
 
-## 📦 Project Structure
+## Project Structure
 
 ```
 my-workflow-demo/
@@ -48,7 +48,7 @@ my-workflow-demo/
     └── cleanup.sh               # Resource cleanup
 ```
 
-## 🚀 Key Components
+## Key Components
 
 ### 1. **Slack RAG Bot** (Python + Vertex AI)
 - **File:** `slack-rag-bot/main.py` (178 lines)
@@ -148,7 +148,7 @@ my-workflow-demo/
   - Confirms before deletion
   - Preserves important data with prompts
 
-## 📊 Statistics
+## Statistics
 
 - **Total Files Created:** 22
 - **Total Lines of Code:** ~2,500+
@@ -156,36 +156,36 @@ my-workflow-demo/
 - **GCP Services Used:** 7 (Functions, Run, Workflows, BigQuery, Vertex AI, Scheduler, Cloud Build)
 - **AI Models:** 2 (Gemini 1.5 Flash, text-embedding-gecko)
 
-## 🎯 What It Demonstrates
+## What It Demonstrates
 
 ### AI Integration
-✅ **LLM APIs** - Vertex AI Gemini for text generation
-✅ **Embeddings** - Semantic search with vector embeddings
-✅ **RAG** - Retrieval Augmented Generation pipeline
-✅ **AI Analysis** - Risk scoring, sentiment, classification
+**LLM APIs** - Vertex AI Gemini for text generation
+**Embeddings** - Semantic search with vector embeddings
+**RAG** - Retrieval Augmented Generation pipeline
+**AI Analysis** - Risk scoring, sentiment, classification
 
 ### Modern Cloud Architecture
-✅ **Serverless** - Cloud Functions for event-driven code
-✅ **Containers** - Cloud Run for scalable services
-✅ **Orchestration** - Cloud Workflows for complex flows
-✅ **Data Warehouse** - BigQuery for analytics
-✅ **Scheduling** - Cloud Scheduler for automation
+**Serverless** - Cloud Functions for event-driven code
+**Containers** - Cloud Run for scalable services
+**Orchestration** - Cloud Workflows for complex flows
+**Data Warehouse** - BigQuery for analytics
+**Scheduling** - Cloud Scheduler for automation
 
 ### Real-World Integrations
-✅ **Slack** - Webhook integration for Q&A bot
-✅ **Shopify** - Order processing automation
-✅ **Google Workspace** - Sheets dashboards with Apps Script
-✅ **REST APIs** - HTTP endpoints and webhooks
+**Slack** - Webhook integration for Q&A bot
+**Shopify** - Order processing automation
+**Google Workspace** - Sheets dashboards with Apps Script
+**REST APIs** - HTTP endpoints and webhooks
 
 ### Software Engineering Best Practices
-✅ **Type Safety** - TypeScript for order processor
-✅ **Modularity** - Shared utilities and helpers
-✅ **Documentation** - Comprehensive README files
-✅ **Deployment** - One-command deployment scripts
-✅ **Testing** - Automated test suite
-✅ **Monitoring** - Logs and execution tracking
+**Type Safety** - TypeScript for order processor
+**Modularity** - Shared utilities and helpers
+**Documentation** - Comprehensive README files
+**Deployment** - One-command deployment scripts
+**Testing** - Automated test suite
+**Monitoring** - Logs and execution tracking
 
-## 🎮 How To Use
+## How To Use
 
 ### Quick Start (15 minutes)
 ```bash
@@ -210,7 +210,7 @@ curl -X POST $SLACK_BOT_URL -d '{"text":"How do I reset my password?"}'
 
 See **QUICKSTART.md** for detailed instructions.
 
-## 💡 Use Cases
+## Use Cases
 
 This demo shows patterns for:
 
@@ -234,7 +234,7 @@ This demo shows patterns for:
    - Anomaly detection
    - Metric aggregation and reporting
 
-## 🔧 Tech Stack Summary
+## Tech Stack Summary
 
 | Layer | Technology |
 |-------|-----------|
@@ -247,7 +247,7 @@ This demo shows patterns for:
 | **Languages** | Python, TypeScript, SQL, Apps Script |
 | **Deployment** | gcloud CLI, Cloud Build |
 
-## 📈 What's Next?
+## What's Next?
 
 This is a **demo/prototype**. For production:
 
@@ -287,7 +287,7 @@ This is a **demo/prototype**. For production:
    - Staging environment
    - Canary deployments
 
-## 💰 Estimated Costs
+## Estimated Costs
 
 **Demo/Testing (low volume):**
 - Cloud Functions: ~$0.01/day
@@ -302,7 +302,7 @@ This is a **demo/prototype**. For production:
 - Use committed use discounts
 - Monitor with Cost Management
 
-## 📚 Documentation
+## Documentation
 
 - **README.md** - Project overview
 - **QUICKSTART.md** - Setup guide (15 min)
@@ -311,7 +311,7 @@ This is a **demo/prototype**. For production:
 - **apps-script/README.md** - Sheets setup
 - Component READMEs in each directory
 
-## 🎓 Learning Resources
+## Learning Resources
 
 Built with:
 - [Google Cloud Workflows](https://cloud.google.com/workflows/docs)
@@ -321,33 +321,33 @@ Built with:
 - [Cloud Run](https://cloud.google.com/run/docs)
 - [Apps Script](https://developers.google.com/apps-script)
 
-## ✨ Highlights
+## Highlights
 
 **What makes this demo special:**
 
-1. ✅ **Fully Working** - Not just code snippets, complete end-to-end system
-2. ✅ **Real AI** - Actual Vertex AI integration with RAG
-3. ✅ **Modern Stack** - Python, TypeScript, cloud-native services
-4. ✅ **Production Patterns** - Workflows, monitoring, error handling
-5. ✅ **Easy Deploy** - One-command deployment
-6. ✅ **Well Documented** - Comprehensive guides and examples
-7. ✅ **Multiple Integrations** - Slack, Shopify, Google Workspace
-8. ✅ **Extensible** - Clean code, reusable utilities
+1. **Fully Working** - Not just code snippets, complete end-to-end system
+2. **Real AI** - Actual Vertex AI integration with RAG
+3. **Modern Stack** - Python, TypeScript, cloud-native services
+4. **Production Patterns** - Workflows, monitoring, error handling
+5. **Easy Deploy** - One-command deployment
+6. **Well Documented** - Comprehensive guides and examples
+7. **Multiple Integrations** - Slack, Shopify, Google Workspace
+8. **Extensible** - Clean code, reusable utilities
 
-## 🎉 Ready to Use!
+## Ready to Use!
 
 Everything you need is here:
-- ✅ Working code
-- ✅ Deployment scripts
-- ✅ Sample data
-- ✅ Test suite
-- ✅ Documentation
-- ✅ Examples
+- Working code
+- Deployment scripts
+- Sample data
+- Test suite
+- Documentation
+- Examples
 
 Just add your GCP project ID and deploy!
 
 ---
 
-**Built to demonstrate AI-powered workflow automation in action** 🚀
+**Built to demonstrate AI-powered workflow automation in action** 
 
 Questions? Check the documentation or run `./deploy/test-system.sh` to verify everything works!

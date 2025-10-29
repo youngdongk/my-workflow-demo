@@ -247,9 +247,9 @@ class SlackFormatter:
         }
 
         icons = {
-            "info": "ℹ️",
-            "warning": "⚠️",
-            "error": "🚨"
+            "info": "[i]",
+            "warning": "[!]",
+            "error": "[X]"
         }
 
         return {

@@ -28,15 +28,15 @@ Automatically pulls data from BigQuery and creates beautiful dashboards in Googl
    - In Apps Script: Run > Run function > `onOpen`
    - Authorize the script (grant permissions)
    - Refresh your Google Sheet
-   - You should see "📊 Dashboard" menu
+   - You should see "Dashboard" menu
 
 6. **Update Dashboard**
-   - Click "📊 Dashboard" > "🔄 Update Now"
+   - Click "Dashboard" > "Update Now"
    - Wait for execution to complete
    - View your auto-generated sheets!
 
 7. **Setup Daily Automation**
-   - Click "📊 Dashboard" > "⚙️ Setup Trigger"
+   - Click "Dashboard" > "Setup Trigger"
    - This creates a trigger to update daily at 9 AM
 
 ## What It Creates
@@ -51,11 +51,11 @@ The script creates and updates 5 sheets:
 
 ## Features
 
-- 🔄 Auto-refresh data from BigQuery
-- 🎨 Color-coded risk scores and priorities
-- 📧 Email notifications for alerts
-- ⏰ Scheduled daily updates
-- 📊 Ready-to-use dashboard views
+- Auto-refresh data from BigQuery
+- Color-coded risk scores and priorities
+- Email notifications for alerts
+- Scheduled daily updates
+- Ready-to-use dashboard views
 
 ## Customization
 

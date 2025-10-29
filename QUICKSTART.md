@@ -1,4 +1,4 @@
-# 🚀 Quick Start Guide
+# Quick Start Guide
 
 Get the AI Workflow Demo running in 15 minutes!
 
@@ -54,7 +54,7 @@ sed -i "s/your-project-id/$GCP_PROJECT/g" populate_knowledge_base.py
 python populate_knowledge_base.py
 ```
 
-You should see: "✓ Successfully inserted 8 documents!"
+You should see: "[OK] Successfully inserted 8 documents!"
 
 ## Step 4: Test the System (3 min)
 
@@ -99,9 +99,9 @@ Expected: JSON with AI analysis of test order
 
 5. Save and run `onOpen` function (authorize when prompted)
 
-6. Refresh sheet - you'll see "📊 Dashboard" menu
+6. Refresh sheet - you'll see "Dashboard" menu
 
-7. Click "📊 Dashboard" → "🔄 Update Now"
+7. Click "Dashboard" → "Update Now"
 
 8. Watch as tables populate with data!
 
@@ -242,4 +242,4 @@ Check the individual component READMEs:
 - `workflows/` - Workflow definitions
 - `bigquery/` - Database schema and queries
 
-Enjoy building with AI! 🎉
+Enjoy building with AI! 
